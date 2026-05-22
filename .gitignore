@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.DS_Store
+data/boards/
+data/saved-data.json
+*.log
+.env
+.env.*

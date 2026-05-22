@@ -1,0 +1,53 @@
+{
+  "name": "tamia4life-gantt",
+  "version": "1.0.0",
+  "description": "Tamia4Life Lean Launch Gantt roadmap",
+  "author": "Mubasher Aziz",
+  "private": true,
+  "main": "electron/main.cjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "electron .",
+    "build:mac": "electron-builder --mac",
+    "build": "electron-builder --mac"
+  },
+  "build": {
+    "appId": "com.azm.tamia4life.gantt",
+    "productName": "Tamia4Life Gantt",
+    "copyright": "Copyright © 2026 Mubasher Aziz",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "index.html",
+      "css/**/*",
+      "js/**/*",
+      "electron/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "data/default-data.json",
+        "to": "data/default-data.json"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["arm64"]
+        }
+      ],
+      "icon": "build/icon.icns",
+      "darkModeSupport": true
+    },
+    "dmg": {
+      "title": "Tamia4Life Gantt",
+      "icon": "build/icon.icns"
+    }
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8"
+  }
+}

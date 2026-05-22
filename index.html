@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tamia4Life — Lean Launch Gantt</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="app">
+        <div class="titles">
+          <div class="eyebrow">AZM · Kaizen Plan</div>
+          <h1 id="projTitle">Tamia4Life — Lean Launch Roadmap</h1>
+          <div class="meta" id="projMeta"></div>
+        </div>
+        <svg class="ring" id="ring" viewBox="0 0 96 96" aria-label="overall progress"></svg>
+      </header>
+
+      <section class="kpis" id="kpis"></section>
+
+      <section class="toolbar">
+        <div class="grow">
+          <input type="text" id="search" class="search" placeholder="Search tasks…" />
+        </div>
+        <select id="fPhase"><option value="">All phases</option></select>
+        <select id="fOwner"><option value="">All owners</option></select>
+        <select id="fStatus">
+          <option value="">All statuses</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="in-progress">In progress</option>
+          <option value="overdue">Overdue</option>
+          <option value="done">Completed</option>
+        </select>
+        <div class="zoom" title="Zoom timeline">
+          <button id="zOut" type="button">−</button>
+          <span id="zLab">Normal</span>
+          <button id="zIn" type="button">+</button>
+        </div>
+        <button class="btn primary" id="addBtn" type="button">+ Add task</button>
+        <button class="btn" id="shareBtn" type="button" title="Connect to a shared team board">Share</button>
+        <button class="btn ghost" id="expBtn" type="button" title="Download a backup">Export</button>
+        <button class="btn ghost" id="impBtn" type="button" title="Load a backup">Import</button>
+        <button class="btn ghost" id="resetBtn" type="button" title="Restore the default roadmap">Reset</button>
+        <input type="file" id="impFile" accept="application/json" hidden />
+      </section>
+
+      <div class="gantt">
+        <div class="gantt-scroll" id="ganttScroll">
+          <div class="gantt-inner" id="ganttInner"></div>
+        </div>
+      </div>
+
+      <div class="legend" id="legend"></div>
+      <p class="storage-badge" id="storageBadge">Loading…</p>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <div class="modal">
+        <h3 id="modalTitle">Edit task</h3>
+        <div class="body">
+          <div class="fld">
+            <label for="mName">Task name</label>
+            <input type="text" id="mName" placeholder="e.g. Customer discovery interviews" />
+          </div>
+          <div class="row2">
+            <div class="fld">
+              <label for="mPhase">Phase</label>
+              <select id="mPhase"></select>
+            </div>
+            <div class="fld">
+              <label for="mOwner">Owner</label>
+              <input type="text" id="mOwner" placeholder="e.g. Founder" />
+            </div>
+          </div>
+          <div class="row2">
+            <div class="fld">
+              <label for="mStart">Start date</label>
+              <input type="date" id="mStart" />
+            </div>
+            <div class="fld" id="endWrap">
+              <label for="mEnd">End date</label>
+              <input type="date" id="mEnd" />
+            </div>
+          </div>
+          <div class="fld" id="progWrap">
+            <label for="mProg">% complete</label>
+            <div class="rng">
+              <input type="range" id="mProg" min="0" max="100" step="5" />
+              <span class="pv" id="mProgV">0%</span>
+            </div>
+          </div>
+          <div class="chkrow">
+            <input type="checkbox" id="mMile" />
+            <label for="mMile" style="text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--text); cursor: pointer">
+              This is a milestone (single date)
+            </label>
+          </div>
+        </div>
+        <div class="foot">
+          <button class="btn danger" id="delBtn" type="button">Delete</button>
+          <div class="sp"></div>
+          <button class="btn ghost" id="cancelBtn" type="button">Cancel</button>
+          <button class="btn primary" id="saveBtn" type="button">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="overlay" id="shareOverlay">
+      <div class="modal modal-wide">
+        <h3>Shared team board</h3>
+        <div class="body">
+          <p class="help">
+            Host the app online, then share one link so everyone sees the same roadmap. Changes sync automatically every 20 seconds.
+          </p>
+          <div class="fld">
+            <label for="cloudUrl">Cloud app URL</label>
+            <input type="text" id="cloudUrl" placeholder="https://your-app.onrender.com" />
+          </div>
+          <div class="fld">
+            <label for="boardId">Board name</label>
+            <input type="text" id="boardId" placeholder="tamia4life-team" />
+          </div>
+          <div class="fld">
+            <label for="shareLink">Share link</label>
+            <div class="copy-row">
+              <input type="text" id="shareLink" readonly />
+              <button class="btn" id="copyLinkBtn" type="button">Copy</button>
+            </div>
+          </div>
+          <p class="help subtle" id="shareStatus">Not connected to a shared board.</p>
+        </div>
+        <div class="foot">
+          <button class="btn danger" id="disconnectShareBtn" type="button">Disconnect</button>
+          <div class="sp"></div>
+          <button class="btn ghost" id="shareCancelBtn" type="button">Close</button>
+          <button class="btn primary" id="connectShareBtn" type="button">Connect</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
