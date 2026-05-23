@@ -820,16 +820,6 @@ function bindEvents() {
     e.target.value = "";
   });
 
-  document.getElementById("resetBtn").addEventListener("click", () => {
-    if (!confirm("Reset to the default lean roadmap? Your current changes will be lost.")) return;
-    state = structuredClone(defaultData);
-    ui = normalizeUI({ timelineScale: "week", collapsed: [] });
-    Storage.clearAll();
-    didInitScroll = false;
-    render();
-    toast("Roadmap reset to default");
-  });
-
   bindShareUI();
   bindProjectUI();
 }
