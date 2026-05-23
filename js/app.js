@@ -888,6 +888,7 @@ function onRemoteBoardUpdate(data) {
 
 async function boot() {
   defaultData = normalizeState(await Storage.fetchDefault());
+  await Storage.fetchStorageInfo();
   const serverData = await Storage.loadFromServer();
   state = normalizeState(serverData || Storage.loadData(defaultData));
   ui = Storage.loadUI();

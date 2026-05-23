@@ -8,3 +8,6 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      # Add in Render dashboard (Settings → Environment):
+      # SUPABASE_URL=https://euuqijuyuoqgzclhmhki.supabase.co
+      # SUPABASE_SERVICE_ROLE_KEY=<service_role key from Supabase API settings>

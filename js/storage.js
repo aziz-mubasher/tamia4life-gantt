@@ -7,6 +7,9 @@ const STORAGE_KEYS = {
 
 const desktop = typeof window !== "undefined" && window.tamiaApp?.isDesktop;
 
+let syncTimer = null;
+let storageInfo = { storage: "unknown", storageLabel: "Auto-save on" };
+
 const Storage = {
   loadData(fallback) {
     try {
@@ -31,7 +34,12 @@ const Storage = {
       window.tamiaApp.saveRoadmap(data).catch(() => {});
       return;
     }
-    this.syncToServer(data);
+    this.scheduleSync(data);
+  },
+
+  scheduleSync(data) {
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => this.syncToServer(data), 400);
   },
 
   loadUI() {
@@ -66,11 +74,16 @@ const Storage = {
 
   async syncToServer(data) {
     try {
-      await fetch("/api/data", {
+      const res = await fetch("/api/data", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+      if (res.ok && storageInfo.storage === "supabase") {
+        this._lastMode = "saved-database";
+      } else if (res.ok) {
+        this._lastMode = "saved-server";
+      }
     } catch (_) {
       /* server optional */
     }
@@ -107,11 +120,32 @@ const Storage = {
     return null;
   },
 
+  async fetchStorageInfo() {
+    try {
+      const res = await fetch("/api/health");
+      if (!res.ok) return storageInfo;
+      storageInfo = await res.json();
+      return storageInfo;
+    } catch (_) {
+      return storageInfo;
+    }
+  },
+
+  getStorageInfo() {
+    return storageInfo;
+  },
+
   lastSavedLabel() {
     if (Cloud.isShared()) {
       return `Shared board · ${Cloud.getBoardId()}`;
     }
     if (desktop) return "Saved in AZM Lean Startup Road Map";
+    if (this._lastMode === "saved-database" || storageInfo.storage === "supabase") {
+      return `Saved · ${storageInfo.storageLabel || "Supabase cloud database"}`;
+    }
+    if (storageInfo.storage === "ephemeral") {
+      return "Browser only — connect Supabase on server";
+    }
     try {
       const raw = localStorage.getItem(STORAGE_KEYS.data);
       if (!raw) return "Using default roadmap";
