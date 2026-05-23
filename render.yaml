@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: tamia4life-gantt
+    name: azm-lean-startup-roadmap
     runtime: node
     plan: free
     buildCommand: npm install

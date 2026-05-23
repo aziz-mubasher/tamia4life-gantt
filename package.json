@@ -1,7 +1,7 @@
 {
-  "name": "tamia4life-gantt",
-  "version": "1.0.0",
-  "description": "Tamia4Life Lean Launch Gantt roadmap",
+  "name": "azm-lean-startup-roadmap",
+  "version": "1.1.0",
+  "description": "AZM Lean Startup Road Map — interactive Gantt for lean launch planning",
   "author": "Mubasher Aziz",
   "private": true,
   "main": "electron/main.cjs",
@@ -12,14 +12,15 @@
     "build": "electron-builder --mac"
   },
   "build": {
-    "appId": "com.azm.tamia4life.gantt",
-    "productName": "Tamia4Life Gantt",
+    "appId": "com.azm.lean-startup-roadmap",
+    "productName": "AZM Lean Startup Road Map",
     "copyright": "Copyright © 2026 Mubasher Aziz",
     "directories": {
       "output": "dist"
     },
     "files": [
       "index.html",
+      "assets/**/*",
       "css/**/*",
       "js/**/*",
       "electron/**/*"
@@ -42,7 +43,7 @@
       "darkModeSupport": true
     },
     "dmg": {
-      "title": "Tamia4Life Gantt",
+      "title": "AZM Lean Startup Road Map",
       "icon": "build/icon.icns"
     }
   },

@@ -1,5 +1,6 @@
 import Storage from "./storage.js";
 
+const APP_NAME = "AZM - Lean Startup Road Map";
 const ZOOMS = [5, 7, 9, 12, 16];
 const ZNAMES = ["Tiny", "Compact", "Normal", "Wide", "Huge"];
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -52,6 +53,39 @@ function fmt(s) {
 
 function esc(s) {
   return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+function normalizeProject(project) {
+  const p = { ...project };
+  if (!p.name && p.title) {
+    p.name = String(p.title).split(/[—–|-]/)[0].trim() || "My Project";
+  }
+  if (!p.name) p.name = "My Project";
+  delete p.title;
+  return p;
+}
+
+function normalizeState(data) {
+  if (data?.project) data.project = normalizeProject(data.project);
+  if (Array.isArray(data?.tasks)) {
+    data.tasks.forEach((t) => {
+      if (t.link == null) t.link = "";
+    });
+  }
+  return data;
+}
+
+function projectName() {
+  return state?.project?.name || "My Project";
+}
+
+function linkBtn(t) {
+  if (!t.link) return "";
+  return (
+    '<a class="task-link" href="' +
+    esc(t.link) +
+    '" target="_blank" rel="noopener noreferrer" title="Open activity details">↗</a>'
+  );
 }
 
 function lighten(hex) {
@@ -162,7 +196,8 @@ function computeCodes() {
 }
 
 function renderHeader() {
-  document.getElementById("projTitle").textContent = state.project.title;
+  document.title = APP_NAME + " · " + projectName();
+  document.getElementById("projTitle").textContent = projectName();
   const nonM = state.tasks.filter((t) => !t.milestone);
   document.getElementById("projMeta").innerHTML =
     '<span class="pill">Lead &nbsp;<b>' +
@@ -377,6 +412,7 @@ function renderGantt() {
           (hit ? "s-done" : "s-up") +
           '"></span><span class="txt"><div class="t1"><span class="code">M</span>' +
           esc(t.name) +
+          linkBtn(t) +
           '</div><div class="t2">' +
           esc(t.owner || "—") +
           " · " +
@@ -407,6 +443,7 @@ function renderGantt() {
           t._code +
           "</span>" +
           esc(t.name) +
+          linkBtn(t) +
           '</div><div class="t2"><span class="owner-chip">' +
           esc(t.owner || "—") +
           "</span> &nbsp;" +
@@ -464,7 +501,13 @@ function renderLegend() {
   document.getElementById("legend").innerHTML =
     ph +
     '<span class="lg"><span class="dia" style="background:#64748b"></span>Milestone</span>' +
-    '<span class="hint">Click a bar or row to edit · drag to reschedule · drag edges to resize</span>';
+    '<span class="hint">Click a bar or row to edit · ↗ opens details link · drag to reschedule</span>';
+}
+
+function wireTaskLinks() {
+  document.querySelectorAll(".task-link").forEach((el) => {
+    el.addEventListener("click", (e) => e.stopPropagation());
+  });
 }
 
 function wireGantt() {
@@ -484,6 +527,7 @@ function wireGantt() {
       openEditor(el.dataset.edit);
     });
   });
+  wireTaskLinks();
 }
 
 function fillPhaseSelect(sel, val) {
@@ -505,6 +549,7 @@ function openEditor(id) {
   fillPhaseSelect(document.getElementById("mPhase"), t ? t.phase : state.phases[0].id);
   document.getElementById("mName").value = t ? t.name : "";
   document.getElementById("mOwner").value = t ? t.owner || "" : "Founder";
+  document.getElementById("mLink").value = t ? t.link || "" : "";
   document.getElementById("mStart").value = t ? t.start : TODAY_ISO;
   document.getElementById("mEnd").value = t ? t.end : addDays(TODAY_ISO, 6);
   document.getElementById("mProg").value = t ? t.progress : 0;
@@ -610,6 +655,7 @@ function bindEvents() {
     const rec = {
       phase: document.getElementById("mPhase").value,
       name,
+      link: document.getElementById("mLink").value.trim(),
       owner: document.getElementById("mOwner").value.trim(),
       start,
       end,
@@ -672,7 +718,7 @@ function bindEvents() {
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "Tamia4Life-Gantt-" + TODAY_ISO + ".json";
+    a.download = "AZM-Roadmap-" + projectName().replace(/\s+/g, "-") + "-" + TODAY_ISO + ".json";
     a.click();
     URL.revokeObjectURL(a.href);
     toast("Backup downloaded");
@@ -688,7 +734,7 @@ function bindEvents() {
         const d = JSON.parse(rd.result);
         if (!Array.isArray(d.tasks) || !Array.isArray(d.phases)) throw new Error("bad file");
         if (!d.project) d.project = structuredClone(defaultData.project);
-        state = d;
+        state = normalizeState(d);
         didInitScroll = false;
         render();
         toast("Backup loaded");
@@ -711,6 +757,38 @@ function bindEvents() {
   });
 
   bindShareUI();
+  bindProjectUI();
+}
+
+function bindProjectUI() {
+  const overlay = document.getElementById("projectOverlay");
+  const open = () => {
+    document.getElementById("pName").value = state.project.name || "";
+    document.getElementById("pLead").value = state.project.lead || "";
+    document.getElementById("pStart").value = state.project.start || "";
+    document.getElementById("pEnd").value = state.project.end || "";
+    overlay.classList.add("show");
+    setTimeout(() => document.getElementById("pName").focus(), 30);
+  };
+  document.getElementById("editProjectBtn").addEventListener("click", open);
+  document.getElementById("projectCancelBtn").addEventListener("click", () => overlay.classList.remove("show"));
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) overlay.classList.remove("show");
+  });
+  document.getElementById("projectSaveBtn").addEventListener("click", () => {
+    const name = document.getElementById("pName").value.trim();
+    if (!name) {
+      toast("Please enter a project name");
+      return;
+    }
+    state.project.name = name;
+    state.project.lead = document.getElementById("pLead").value.trim();
+    state.project.start = document.getElementById("pStart").value || state.project.start;
+    state.project.end = document.getElementById("pEnd").value || state.project.end;
+    overlay.classList.remove("show");
+    render();
+    toast("Project updated");
+  });
 }
 
 function bindShareUI() {
@@ -773,7 +851,7 @@ function bindShareUI() {
     try {
       const existing = await cloud.loadBoard();
       if (existing) {
-        state = existing;
+        state = normalizeState(existing);
         didInitScroll = false;
         render();
       } else {
@@ -800,7 +878,7 @@ function bindShareUI() {
 }
 
 function onRemoteBoardUpdate(data) {
-  state = data;
+  state = normalizeState(data);
   didInitScroll = false;
   renderGantt();
   renderHeader();
@@ -809,9 +887,9 @@ function onRemoteBoardUpdate(data) {
 }
 
 async function boot() {
-  defaultData = await Storage.fetchDefault();
+  defaultData = normalizeState(await Storage.fetchDefault());
   const serverData = await Storage.loadFromServer();
-  state = serverData || Storage.loadData(defaultData);
+  state = normalizeState(serverData || Storage.loadData(defaultData));
   ui = Storage.loadUI();
   bindEvents();
   render();

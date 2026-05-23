@@ -111,7 +111,7 @@ const Storage = {
     if (Cloud.isShared()) {
       return `Shared board · ${Cloud.getBoardId()}`;
     }
-    if (desktop) return "Saved in Tamia4Life app";
+    if (desktop) return "Saved in AZM Lean Startup Road Map";
     try {
       const raw = localStorage.getItem(STORAGE_KEYS.data);
       if (!raw) return "Using default roadmap";

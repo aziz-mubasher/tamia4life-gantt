@@ -3,15 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tamia4Life — Lean Launch Gantt</title>
+    <title>AZM - Lean Startup Road Map</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="./assets/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="./assets/favicon.png" />
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
     <div class="wrap">
       <header class="app">
         <div class="titles">
-          <div class="eyebrow">AZM · Kaizen Plan</div>
-          <h1 id="projTitle">Tamia4Life — Lean Launch Roadmap</h1>
+          <div class="eyebrow">AZM - Lean Startup Road Map</div>
+          <div class="title-row">
+            <h1 id="projTitle">Tamia4Life</h1>
+            <button class="btn ghost title-edit" id="editProjectBtn" type="button" title="Edit project name">Edit</button>
+          </div>
           <div class="meta" id="projMeta"></div>
         </div>
         <svg class="ring" id="ring" viewBox="0 0 96 96" aria-label="overall progress"></svg>
@@ -55,6 +61,37 @@
       <p class="storage-badge" id="storageBadge">Loading…</p>
     </div>
 
+    <div class="overlay" id="projectOverlay">
+      <div class="modal">
+        <h3>Edit project</h3>
+        <div class="body">
+          <div class="fld">
+            <label for="pName">Project name</label>
+            <input type="text" id="pName" placeholder="e.g. Tamia4Life" />
+          </div>
+          <div class="fld">
+            <label for="pLead">Project lead</label>
+            <input type="text" id="pLead" placeholder="e.g. Founder name" />
+          </div>
+          <div class="row2">
+            <div class="fld">
+              <label for="pStart">Start date</label>
+              <input type="date" id="pStart" />
+            </div>
+            <div class="fld">
+              <label for="pEnd">End date</label>
+              <input type="date" id="pEnd" />
+            </div>
+          </div>
+        </div>
+        <div class="foot">
+          <div class="sp"></div>
+          <button class="btn ghost" id="projectCancelBtn" type="button">Cancel</button>
+          <button class="btn primary" id="projectSaveBtn" type="button">Save</button>
+        </div>
+      </div>
+    </div>
+
     <div class="overlay" id="overlay">
       <div class="modal">
         <h3 id="modalTitle">Edit task</h3>
@@ -62,6 +99,10 @@
           <div class="fld">
             <label for="mName">Task name</label>
             <input type="text" id="mName" placeholder="e.g. Customer discovery interviews" />
+          </div>
+          <div class="fld">
+            <label for="mLink">Details link (optional)</label>
+            <input type="url" id="mLink" placeholder="https://docs.google.com/... or Notion, Drive, etc." />
           </div>
           <div class="row2">
             <div class="fld">
@@ -117,7 +158,7 @@
           </p>
           <div class="fld">
             <label for="cloudUrl">Cloud app URL</label>
-            <input type="text" id="cloudUrl" placeholder="https://your-app.onrender.com" />
+            <input type="text" id="cloudUrl" placeholder="https://tamia4life-gantt.onrender.com" />
           </div>
           <div class="fld">
             <label for="boardId">Board name</label>

@@ -28,7 +28,7 @@ function createWindow() {
     height: 920,
     minWidth: 960,
     minHeight: 640,
-    title: "Tamia4Life Gantt",
+    title: "AZM Lean Startup Road Map",
     backgroundColor: "#eef2f7",
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
@@ -39,7 +39,7 @@ function createWindow() {
   });
 
   win.loadFile(path.join(__dirname, "..", "index.html"));
-  win.setTitle("Tamia4Life — Lean Launch Gantt");
+  win.setTitle("AZM - Lean Startup Road Map");
 
   if (isDev) {
     win.webContents.openDevTools({ mode: "detach" });
