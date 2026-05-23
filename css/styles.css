@@ -849,6 +849,17 @@ select {
   text-align: center;
 }
 
+.app-footer {
+  font-size: 11.5px;
+  color: var(--faint);
+  text-align: center;
+  padding: 4px 22px 28px;
+}
+
+.app-footer .heart {
+  color: #e11d48;
+}
+
 .modal-wide {
   max-width: 520px;
 }
