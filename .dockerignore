@@ -1,0 +1,10 @@
+node_modules
+desktop
+electron
+dist
+.git
+build
+*.log
+.DS_Store
+data/boards
+data/saved-data.json
