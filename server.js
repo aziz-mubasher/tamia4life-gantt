@@ -73,6 +73,9 @@ async function readBody(req) {
   return body;
 }
 
+await mkdir(BOARDS_DIR, { recursive: true });
+await mkdir(join(__dirname, "data"), { recursive: true });
+
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
 

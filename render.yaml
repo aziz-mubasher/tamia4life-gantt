@@ -1,8 +1,10 @@
 services:
   - type: web
     name: azm-lean-startup-roadmap
-    runtime: docker
+    runtime: node
     plan: free
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
-    healthCheckPath: /health
+    buildCommand: "true"
+    startCommand: "node server.js"
+    envVars:
+      - key: NODE_ENV
+        value: production
