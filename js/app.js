@@ -158,6 +158,10 @@ function overallProgress() {
   return tot ? Math.round(wp / tot) : 0;
 }
 
+function labelWidth() {
+  return window.innerWidth <= 768 ? 176 : 460;
+}
+
 function geometry() {
   let minS = state.project.start;
   let maxE = state.project.end;
@@ -174,7 +178,7 @@ function geometry() {
   const totalDays = dayDiff(start, end) + 1;
   const scale = timelineScale();
   const dw = scale.dw;
-  return { start, end, totalDays, weeks: Math.ceil(totalDays / 7), dw, tlW: totalDays * dw, labelW: 460, scale };
+  return { start, end, totalDays, weeks: Math.ceil(totalDays / 7), dw, tlW: totalDays * dw, labelW: labelWidth(), scale };
 }
 
 function toast(msg) {
@@ -858,6 +862,12 @@ function bindProjectUI() {
     overlay.classList.remove("show");
     render();
     toast("Project updated");
+  });
+
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => renderGantt(), 150);
   });
 }
 

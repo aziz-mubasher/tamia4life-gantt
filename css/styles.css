@@ -344,11 +344,16 @@ select {
   box-shadow: var(--shadow);
   margin-top: 16px;
   overflow: hidden;
+  width: 100%;
+  min-width: 0;
 }
 
 .gantt-scroll {
   overflow: auto;
   max-height: 64vh;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-x pan-y;
 }
 
 .gantt-inner {
@@ -694,6 +699,7 @@ select {
   border: 1px solid rgba(15, 23, 42, 0.14);
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
   user-select: none;
+  touch-action: none;
 }
 
 .bar:active {
@@ -754,6 +760,7 @@ select {
   display: flex;
   align-items: center;
   gap: 6px;
+  touch-action: none;
 }
 
 .ms-d {
@@ -1035,6 +1042,10 @@ select {
 }
 
 @media (max-width: 680px) {
+  .wrap {
+    padding: 14px 12px 40px;
+  }
+
   .kpis {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1042,5 +1053,54 @@ select {
   header.app {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .gantt-scroll {
+    max-height: min(58vh, 520px);
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cell-label {
+    position: relative;
+    left: auto;
+  }
+
+  .ghead {
+    position: relative;
+    top: auto;
+  }
+
+  .ghead .cell-label {
+    position: relative;
+    z-index: 10;
+  }
+
+  .ghead .corner .ct {
+    font-size: 11px;
+  }
+
+  .ghead .corner .cs {
+    display: none;
+  }
+
+  .row.task,
+  .row.ms {
+    height: 42px;
+  }
+
+  .lc .txt .t2 {
+    display: none;
+  }
+
+  .phase-meta {
+    display: none;
+  }
+
+  .legend .hint {
+    flex: 1 1 100%;
+    margin-left: 0;
+    text-align: center;
   }
 }
