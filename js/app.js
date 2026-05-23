@@ -2,11 +2,10 @@ import Storage from "./storage.js";
 
 const APP_NAME = "AZM - Lean Startup Road Map";
 const TIMELINE_SCALES = {
-  month: { name: "Month", dw: 5, unit: "week" },
   week: { name: "Week", dw: 12, unit: "week" },
   day: { name: "Day", dw: 24, unit: "day" },
 };
-const TIMELINE_ORDER = ["month", "week", "day"];
+const TIMELINE_ORDER = ["week", "day"];
 const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const STAT_DOT = { done: "s-done", "in-progress": "s-prog", overdue: "s-over", upcoming: "s-up" };
@@ -88,8 +87,9 @@ function timelineScale() {
 function normalizeUI(raw) {
   const uiState = Object.assign({ timelineScale: "week", collapsed: [] }, raw || {});
   if (!TIMELINE_SCALES[uiState.timelineScale] && typeof uiState.zoom === "number") {
-    uiState.timelineScale = ["month", "month", "week", "week", "day"][uiState.zoom] || "week";
+    uiState.timelineScale = uiState.zoom >= 3 ? "day" : "week";
   }
+  if (uiState.timelineScale === "month") uiState.timelineScale = "week";
   if (!TIMELINE_SCALES[uiState.timelineScale]) uiState.timelineScale = "week";
   delete uiState.zoom;
   if (!Array.isArray(uiState.collapsed)) uiState.collapsed = [];
@@ -560,7 +560,7 @@ function renderLegend() {
   document.getElementById("legend").innerHTML =
     ph +
     '<span class="lg"><span class="dia" style="background:#64748b"></span>Milestone</span>' +
-    '<span class="hint">Month · Week · Day timeline · click a bar to edit · drag to reschedule</span>';
+    '<span class="hint">Week · Day timeline · click a bar to edit · drag to reschedule</span>';
 }
 
 function wireTaskLinks() {
