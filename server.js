@@ -83,6 +83,11 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  if (url.pathname === "/health") {
+    json(res, 200, { ok: true });
+    return;
+  }
+
   const boardMatch = url.pathname.match(/^\/api\/boards\/([^/]+)$/);
   if (boardMatch) {
     const boardId = sanitizeBoardId(decodeURIComponent(boardMatch[1]));
@@ -165,6 +170,6 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Tamia4Life Gantt running at http://localhost:${PORT}`);
+  console.log(`AZM Lean Startup Road Map running on port ${PORT}`);
   console.log(`Shared boards stored in ${BOARDS_DIR}`);
 });
