@@ -1,7 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Idea">
-  <rect width="32" height="32" rx="7" fill="#4338ca"/>
-  <path fill="#fde68a" d="M16 6c-3.3 0-6 2.7-6 6 0 2.2 1.1 4.1 2.8 5.2V19h6.4v-1.8C20.9 16.1 22 14.2 22 12c0-3.3-2.7-6-6-6z"/>
-  <rect x="12.5" y="19.5" width="7" height="2.5" rx="1.2" fill="#fbbf24"/>
-  <rect x="13.5" y="22.5" width="5" height="2" rx="1" fill="#f59e0b"/>
-  <path fill="#fff7cc" opacity=".45" d="M13 10.5c.8-1.6 2-2.5 3-2.5s2.2.9 3 2.5c-1.2-.4-2.4-.4-3 0s-1.8.4-3 0z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="AZM Lean Startup Road Map">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="48%" stop-color="#312e81"/>
+      <stop offset="100%" stop-color="#4338ca"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect width="512" height="256" rx="112" fill="url(#shine)"/>
+  <line x1="104" y1="352" x2="408" y2="352" stroke="#c7d2fe" stroke-opacity="0.35" stroke-width="10" stroke-linecap="round"/>
+  <rect x="104" y="156" width="128" height="30" rx="15" fill="#ffffff" fill-opacity="0.96"/>
+  <rect x="104" y="214" width="210" height="30" rx="15" fill="#e0e7ff" fill-opacity="0.96"/>
+  <rect x="104" y="272" width="286" height="30" rx="15" fill="#fbbf24" fill-opacity="0.96"/>
+  <circle cx="372" cy="352" r="12" fill="#f87171"/>
+  <rect x="356" y="336" width="22" height="22" rx="5" transform="rotate(45 367 347)" fill="#fde68a"/>
 </svg>
