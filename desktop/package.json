@@ -1,10 +1,10 @@
 {
   "name": "azm-lean-startup-roadmap-desktop",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "AZM Lean Startup Road Map — macOS desktop app",
   "author": "Mubasher Aziz",
   "private": true,
-  "main": "../electron/main.cjs",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "electron ..",
     "build:mac": "electron-builder --mac --projectDir .."
@@ -21,7 +21,7 @@
       "../assets/**/*",
       "../css/**/*",
       "../js/**/*",
-      "../electron/**/*"
+      "electron/**/*"
     ],
     "extraResources": [
       {

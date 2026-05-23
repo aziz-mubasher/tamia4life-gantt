@@ -1,10 +1,11 @@
 {
   "name": "azm-lean-startup-roadmap",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "AZM Lean Startup Road Map — web server and Gantt app",
   "author": "Mubasher Aziz",
   "private": true,
   "type": "module",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   }

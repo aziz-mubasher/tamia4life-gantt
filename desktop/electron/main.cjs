@@ -6,7 +6,7 @@ const isDev = !app.isPackaged;
 const ROADMAP_FILE = () => path.join(app.getPath("userData"), "roadmap.json");
 const DEFAULT_FILE = () =>
   isDev
-    ? path.join(__dirname, "..", "data", "default-data.json")
+    ? path.join(__dirname, "..", "..", "data", "default-data.json")
     : path.join(process.resourcesPath, "data", "default-data.json");
 
 function readJson(filePath) {
@@ -38,7 +38,7 @@ function createWindow() {
     },
   });
 
-  win.loadFile(path.join(__dirname, "..", "index.html"));
+  win.loadFile(path.join(__dirname, "..", "..", "index.html"));
   win.setTitle("AZM - Lean Startup Road Map");
 
   if (isDev) {
