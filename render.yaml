@@ -3,11 +3,12 @@ services:
     name: azm-lean-startup-roadmap
     runtime: node
     plan: free
-    buildCommand: "true"
-    startCommand: "node server.js"
+    buildCommand: npm install
+    startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
-      # Add in Render dashboard (Settings → Environment):
-      # SUPABASE_URL=https://euuqijuyuoqgzclhmhki.supabase.co
-      # SUPABASE_SERVICE_ROLE_KEY=<service_role key from Supabase API settings>
+      - key: SUPABASE_URL
+        value: https://euuqijuyuoqgzclhmhki.supabase.co
+      # Set in Render dashboard → Environment (secret):
+      # SUPABASE_SERVICE_ROLE_KEY = service_role key from Supabase API settings
