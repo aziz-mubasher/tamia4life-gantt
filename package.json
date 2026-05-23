@@ -8,6 +8,7 @@
   "main": "electron/main.cjs",
   "scripts": {
     "start": "node server.js",
+    "render:start": "node server.js",
     "dev": "electron .",
     "build:mac": "electron-builder --mac",
     "build": "electron-builder --mac"
