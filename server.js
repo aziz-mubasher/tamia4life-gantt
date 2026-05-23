@@ -172,7 +172,7 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`AZM Lean Startup Road Map running on port ${PORT}`);
   console.log(`Shared boards stored in ${BOARDS_DIR}`);
 });

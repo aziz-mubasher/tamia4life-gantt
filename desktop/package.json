@@ -1,0 +1,47 @@
+{
+  "name": "azm-lean-startup-roadmap-desktop",
+  "version": "1.2.0",
+  "description": "AZM Lean Startup Road Map — macOS desktop app",
+  "author": "Mubasher Aziz",
+  "private": true,
+  "main": "../electron/main.cjs",
+  "scripts": {
+    "dev": "electron ..",
+    "build:mac": "electron-builder --mac --projectDir .."
+  },
+  "build": {
+    "appId": "com.azm.lean-startup-roadmap",
+    "productName": "AZM Lean Startup Road Map",
+    "copyright": "Copyright © 2026 Mubasher Aziz",
+    "directories": {
+      "output": "../dist"
+    },
+    "files": [
+      "../index.html",
+      "../assets/**/*",
+      "../css/**/*",
+      "../js/**/*",
+      "../electron/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../data/default-data.json",
+        "to": "data/default-data.json"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [{ "target": "dmg", "arch": ["arm64"] }],
+      "icon": "../build/icon.icns",
+      "darkModeSupport": true
+    },
+    "dmg": {
+      "title": "AZM Lean Startup Road Map",
+      "icon": "../build/icon.icns"
+    }
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8"
+  }
+}
