@@ -1,8 +1,13 @@
 import Storage from "./storage.js";
 
 const APP_NAME = "AZM - Lean Startup Road Map";
-const ZOOMS = [5, 7, 9, 12, 16];
-const ZNAMES = ["Tiny", "Compact", "Normal", "Wide", "Huge"];
+const TIMELINE_SCALES = {
+  month: { name: "Month", dw: 5, unit: "week" },
+  week: { name: "Week", dw: 12, unit: "week" },
+  day: { name: "Day", dw: 24, unit: "day" },
+};
+const TIMELINE_ORDER = ["month", "week", "day"];
+const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const STAT_DOT = { done: "s-done", "in-progress": "s-prog", overdue: "s-over", upcoming: "s-up" };
 const STAT_LAB = { done: "Completed", "in-progress": "In progress", overdue: "Overdue", upcoming: "Upcoming" };
@@ -73,6 +78,22 @@ function normalizeState(data) {
     });
   }
   return data;
+}
+
+function timelineScale() {
+  const key = ui.timelineScale || "week";
+  return TIMELINE_SCALES[key] || TIMELINE_SCALES.week;
+}
+
+function normalizeUI(raw) {
+  const uiState = Object.assign({ timelineScale: "week", collapsed: [] }, raw || {});
+  if (!TIMELINE_SCALES[uiState.timelineScale] && typeof uiState.zoom === "number") {
+    uiState.timelineScale = ["month", "month", "week", "week", "day"][uiState.zoom] || "week";
+  }
+  if (!TIMELINE_SCALES[uiState.timelineScale]) uiState.timelineScale = "week";
+  delete uiState.zoom;
+  if (!Array.isArray(uiState.collapsed)) uiState.collapsed = [];
+  return uiState;
 }
 
 function projectName() {
@@ -151,8 +172,9 @@ function geometry() {
   const start = iso(sd);
   const end = iso(ed);
   const totalDays = dayDiff(start, end) + 1;
-  const dw = ZOOMS[ui.zoom];
-  return { start, end, totalDays, weeks: Math.round(totalDays / 7), dw, tlW: totalDays * dw, labelW: 460 };
+  const scale = timelineScale();
+  const dw = scale.dw;
+  return { start, end, totalDays, weeks: Math.ceil(totalDays / 7), dw, tlW: totalDays * dw, labelW: 460, scale };
 }
 
 function toast(msg) {
@@ -284,7 +306,9 @@ function renderFilters() {
   fP.innerHTML =
     '<option value="">All phases</option>' + state.phases.map((p) => '<option value="' + p.id + '">' + esc(p.name) + "</option>").join("");
   fP.value = curP;
-  document.getElementById("zLab").textContent = ZNAMES[ui.zoom];
+  document.querySelectorAll("[data-scale]").forEach((btn) => {
+    btn.classList.toggle("on", btn.dataset.scale === (ui.timelineScale || "week"));
+  });
 }
 
 function passesFilter(t) {
@@ -311,8 +335,9 @@ function renderGantt() {
   inner.style.width = g.labelW + g.tlW + "px";
   inner.style.setProperty("--labelW", g.labelW + "px");
   inner.style.setProperty("--tlW", g.tlW + "px");
-  inner.style.setProperty("--wk", g.dw * 7 + "px");
-  inner.style.setProperty("--weStart", g.dw * 5 + "px");
+  const gridUnit = g.scale.unit === "day" ? g.dw : g.dw * 7;
+  inner.style.setProperty("--wk", gridUnit + "px");
+  inner.style.setProperty("--weStart", g.scale.unit === "day" ? g.dw * 5 + "px" : g.dw * 5 + "px");
   const xOf = (s) => dayDiff(g.start, s) * g.dw;
   const wOf = (s, e) => (dayDiff(s, e) + 1) * g.dw;
   const msX = (s) => dayDiff(g.start, s) * g.dw + g.dw / 2;
@@ -330,28 +355,62 @@ function renderGantt() {
   }
 
   let weeks = "";
-  for (let w = 0; w < g.weeks; w++) {
-    const wStart = addDays(g.start, w * 7);
-    const isNow = TODAY_ISO >= wStart && TODAY_ISO <= addDays(wStart, 6);
-    weeks +=
-      '<div class="week' +
-      (isNow ? " now" : "") +
-      '" style="width:' +
-      g.dw * 7 +
-      'px"><span class="wn">W' +
-      (w + 1) +
-      '</span><span class="wd">' +
-      fmt(wStart) +
-      "</span></div>";
+  if (g.scale.unit === "week") {
+    for (let w = 0; w < g.weeks; w++) {
+      const wStart = addDays(g.start, w * 7);
+      const wEnd = addDays(wStart, 6);
+      const daysInSeg = Math.min(7, dayDiff(wStart, g.end) + 1);
+      if (daysInSeg <= 0) break;
+      const isNow = TODAY_ISO >= wStart && TODAY_ISO <= wEnd;
+      weeks +=
+        '<div class="week' +
+        (isNow ? " now" : "") +
+        '" style="width:' +
+        daysInSeg * g.dw +
+        'px"><span class="wn">W' +
+        (w + 1) +
+        '</span><span class="wd">' +
+        fmt(wStart) +
+        " – " +
+        fmt(wEnd) +
+        "</span></div>";
+    }
+  }
+
+  let days = "";
+  if (g.scale.unit === "day") {
+    for (let d = 0; d < g.totalDays; d++) {
+      const dayStart = addDays(g.start, d);
+      const dt = D(dayStart);
+      const isToday = dayStart === TODAY_ISO;
+      const isWeekend = dt.getDay() === 0 || dt.getDay() === 6;
+      const showMonth = d === 0 || dt.getDate() === 1;
+      days +=
+        '<div class="day' +
+        (isToday ? " now" : "") +
+        (isWeekend ? " weekend" : "") +
+        '" style="width:' +
+        g.dw +
+        'px" title="' +
+        DOW[dt.getDay()] +
+        " " +
+        fmt(dayStart) +
+        '"><span class="dn">' +
+        dt.getDate() +
+        "</span>" +
+        (showMonth ? '<span class="dm">' + MON[dt.getMonth()] + "</span>" : '<span class="dd">' + DOW[dt.getDay()].charAt(0) + "</span>") +
+        "</div>";
+    }
   }
 
   const head =
     '<div class="ghead"><div class="cell-label"><div class="corner"><div class="ct">ACTIVITY</div><div class="cs">owner · dates · progress</div></div></div>' +
     '<div class="cell-track"><div class="months">' +
     months +
-    '</div><div class="weeks">' +
-    weeks +
-    "</div></div></div>";
+    "</div>" +
+    (weeks ? '<div class="weeks">' + weeks + "</div>" : "") +
+    (days ? '<div class="days">' + days + "</div>" : "") +
+    "</div></div>";
 
   let body = "";
   let anyVisible = false;
@@ -501,7 +560,7 @@ function renderLegend() {
   document.getElementById("legend").innerHTML =
     ph +
     '<span class="lg"><span class="dia" style="background:#64748b"></span>Milestone</span>' +
-    '<span class="hint">Click a bar or row to edit · ↗ opens details link · drag to reschedule</span>';
+    '<span class="hint">Month · Week · Day timeline · click a bar to edit · drag to reschedule</span>';
 }
 
 function wireTaskLinks() {
@@ -581,7 +640,7 @@ function bindEvents() {
       if (e.target.classList.contains("l")) mode = "resize-l";
       else if (e.target.classList.contains("r")) mode = "resize-r";
     }
-    const dw = ZOOMS[ui.zoom];
+    const dw = timelineScale().dw;
     drag = { id, mode, el, bar: !!bar, startX: e.clientX, os: t.start, oe: t.end, dw, moved: false, ns: t.start, ne: t.end };
     document.body.style.userSelect = "none";
     e.preventDefault();
@@ -697,17 +756,28 @@ function bindEvents() {
     document.getElementById(id).addEventListener("change", renderGantt);
   });
 
-  document.getElementById("zIn").addEventListener("click", () => {
-    if (ui.zoom < ZOOMS.length - 1) {
-      ui.zoom++;
+  document.querySelectorAll("[data-scale]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      ui.timelineScale = btn.dataset.scale;
+      Storage.saveUI(ui);
+      renderFilters();
+      renderGantt();
+    });
+  });
+
+  document.getElementById("zIn")?.addEventListener("click", () => {
+    const i = TIMELINE_ORDER.indexOf(ui.timelineScale || "week");
+    if (i < TIMELINE_ORDER.length - 1) {
+      ui.timelineScale = TIMELINE_ORDER[i + 1];
       Storage.saveUI(ui);
       renderFilters();
       renderGantt();
     }
   });
-  document.getElementById("zOut").addEventListener("click", () => {
-    if (ui.zoom > 0) {
-      ui.zoom--;
+  document.getElementById("zOut")?.addEventListener("click", () => {
+    const i = TIMELINE_ORDER.indexOf(ui.timelineScale || "week");
+    if (i > 0) {
+      ui.timelineScale = TIMELINE_ORDER[i - 1];
       Storage.saveUI(ui);
       renderFilters();
       renderGantt();
@@ -749,7 +819,7 @@ function bindEvents() {
   document.getElementById("resetBtn").addEventListener("click", () => {
     if (!confirm("Reset to the default lean roadmap? Your current changes will be lost.")) return;
     state = structuredClone(defaultData);
-    ui = { zoom: 2, collapsed: [] };
+    ui = normalizeUI({ timelineScale: "week", collapsed: [] });
     Storage.clearAll();
     didInitScroll = false;
     render();
@@ -891,7 +961,7 @@ async function boot() {
   await Storage.fetchStorageInfo();
   const serverData = await Storage.loadFromServer();
   state = normalizeState(serverData || Storage.loadData(defaultData));
-  ui = Storage.loadUI();
+  ui = normalizeUI(Storage.loadUI());
   bindEvents();
   render();
   if (Storage.cloud.isShared()) {

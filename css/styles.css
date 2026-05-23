@@ -463,6 +463,69 @@ select {
   background: var(--accent-soft);
 }
 
+.days {
+  display: flex;
+  height: 34px;
+  border-top: 1px solid var(--line);
+}
+
+.day {
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.day.weekend {
+  background: var(--surface-2);
+}
+
+.day.now {
+  background: var(--accent-soft);
+}
+
+.day .dn {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+.day .dm,
+.day .dd {
+  font-size: 8px;
+  color: var(--faint);
+  margin-top: 2px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.timeline-scale .scale-btn {
+  border: none;
+  background: var(--surface-2);
+  height: 34px;
+  padding: 0 10px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--muted);
+  border-left: 1px solid var(--line);
+}
+
+.timeline-scale .scale-btn:hover {
+  background: #fff;
+  color: var(--accent);
+}
+
+.timeline-scale .scale-btn.on {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
 .row.phase {
   cursor: pointer;
   border-top: 1px solid var(--line);

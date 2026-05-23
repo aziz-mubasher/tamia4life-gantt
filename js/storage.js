@@ -45,11 +45,11 @@ const Storage = {
   loadUI() {
     try {
       const raw = localStorage.getItem(STORAGE_KEYS.ui);
-      if (raw) return Object.assign({ zoom: 2, collapsed: [] }, JSON.parse(raw));
+      if (raw) return Object.assign({ timelineScale: "week", collapsed: [] }, JSON.parse(raw));
     } catch (_) {
       /* ignore */
     }
-    return { zoom: 2, collapsed: [] };
+    return { timelineScale: "week", collapsed: [] };
   },
 
   saveUI(ui) {

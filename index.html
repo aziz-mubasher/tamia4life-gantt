@@ -38,10 +38,12 @@
           <option value="overdue">Overdue</option>
           <option value="done">Completed</option>
         </select>
-        <div class="zoom" title="Zoom timeline">
-          <button id="zOut" type="button">−</button>
-          <span id="zLab">Normal</span>
-          <button id="zIn" type="button">+</button>
+        <div class="zoom timeline-scale" title="Timeline scale">
+          <button id="zOut" type="button" aria-label="Zoom out">−</button>
+          <button type="button" data-scale="month" class="scale-btn">Month</button>
+          <button type="button" data-scale="week" class="scale-btn on">Week</button>
+          <button type="button" data-scale="day" class="scale-btn">Day</button>
+          <button id="zIn" type="button" aria-label="Zoom in">+</button>
         </div>
         <button class="btn primary" id="addBtn" type="button">+ Add task</button>
         <button class="btn" id="shareBtn" type="button" title="Connect to a shared team board">Share</button>
